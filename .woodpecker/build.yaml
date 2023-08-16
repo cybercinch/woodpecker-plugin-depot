@@ -1,0 +1,25 @@
+variables:
+  - &platforms 'linux/arm64/v8,linux/amd64'
+  - &docker_creds
+    username: ${CI_REPO_OWNER}
+    password:
+      from_secret: docker_password
+
+steps:
+  publish-depot-plugin:
+    image: woodpeckerci/plugin-docker-buildx
+    pull: true
+    group: docker
+    settings:
+      <<: *docker_creds
+      token: 
+        from_secret: depot_token
+      repo: cybercinch/woodpecker-plugin-depot
+      dockerfile: Dockerfile
+      platforms: *platforms
+      tag: latest
+    when:
+      branch: ${CI_REPO_DEFAULT_BRANCH}
+      event: 
+        - push
+        - manual
