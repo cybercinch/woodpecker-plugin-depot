@@ -91,7 +91,7 @@ function parse_tags {
         TAGS_LENGTH=${#TAGS_ARRAY[@]}
         for (( i=0; i<TAGS_LENGTH; i++ ));
         do
-           echo -n "-t ${PLUGIN_REPO}:${TAGS_ARRAY[$i]}"
+            tags+=( -t "${PLUGIN_REPO}:${TAGS_ARRAY[$i]}" )
         done
 
         # Reset IFS to default value
@@ -111,17 +111,16 @@ function build_on_depot {
                 woodpecker_note "Building and pushing with Depot..."
                 # Build and push with depot
 
-                TAGS=$(parse_tags)
-                woodpecker_note "${TAGS}"
+                parse_tags
+                woodpecker_note "${tags[@]}"
 
                 DEPOT_TOKEN=${PLUGIN_TOKEN} depot build \
                                                   --project "${PLUGIN_PROJECT}" \
                                                   --platform "${PLUGIN_PLATFORMS}" \
-                                                  -t "${PLUGIN_REPO}:${PLUGIN_TAGS}" \
                                                   -f "${PLUGIN_DOCKERFILE}" \
-                                                  --quiet \
+                                                  "${tags[@]}" --quiet \
                                                   --push \
-                                                  .
+                                                   .
                 woodpecker_note "Build completed"
         fi 
 }
