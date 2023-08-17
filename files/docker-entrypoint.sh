@@ -98,6 +98,46 @@ function parse_tags {
         IFS=' '
 }
 
+function build_cli {
+
+        options+=( --project "${PLUGIN_PROJECT}" )
+        options+=( --platform "${PLUGIN_PLATFORMS}" )
+        
+
+        if [[ -n ${PLUGIN_TAG} ]]; then
+                # Singular tag support
+                options+=( -t "${PLUGIN_REPO}:${PLUGIN_TAG}" )
+        elif [[ -n ${PLUGIN_TAGS} ]]; then
+                # Multiple tags must be supplied
+                # set (,) as delimiter
+                IFS=','
+                # Read tags into an array
+                read -ra TAGS_ARRAY <<< "$PLUGIN_TAGS"
+
+                # For each tag append to the cli parameters
+                for (( i=0; i<${#TAGS_ARRAY[@]}; i++ ));
+                do
+                        options+=( -t "${PLUGIN_REPO}:${TAGS_ARRAY[$i]}" )
+                done
+        fi
+        # Reset IFS to default value
+        IFS=' '
+        # Specify the path to file
+        options+=( -f "${PLUGIN_DOCKERFILE}" )
+        if [[ -n "${PLUGIN_QUIET}" && "${PLUGIN_QUIET}" == 'true' ]]; then
+                options+=( --quiet )
+        fi
+        if [[ -n "${PLUGIN_PUSH}" && "${PLUGIN_PUSH}" == 'true' ]]; then
+                options+=( --push )
+        fi
+        if [[ -n "${PLUGIN_LOAD}" && "${PLUGIN_LOAD}" == 'true' ]]; then
+                options+=( --load )
+        fi
+        # Specify the Docker context
+        options+=( "${PLUGIN_CONTEXT:=.}" )
+
+}
+
 function build_on_depot {
         if [ "${PLUGIN_REPOHOST}" == "docker.io" ]; then
                 woodpecker_note "Building image ${PLUGIN_REPO}:${PLUGIN_TAG} for Docker Hub"
@@ -111,16 +151,11 @@ function build_on_depot {
                 woodpecker_note "Building and pushing with Depot..."
                 # Build and push with depot
 
-                parse_tags
-                woodpecker_note "${tags[@]}"
+                #parse_tags
+                # Build the Commandline parameters
+                build_cli
 
-                DEPOT_TOKEN=${PLUGIN_TOKEN} depot build \
-                                                  --project "${PLUGIN_PROJECT}" \
-                                                  --platform "${PLUGIN_PLATFORMS}" \
-                                                  -f "${PLUGIN_DOCKERFILE}" \
-                                                  "${tags[@]}" --quiet \
-                                                  --push \
-                                                   .
+                DEPOT_TOKEN=${PLUGIN_TOKEN} depot build "${options[@]}"
                 woodpecker_note "Build completed"
         fi 
 }

@@ -11,5 +11,8 @@ ADD files/docker-entrypoint.sh /docker-entrypoint.sh
 
 ENV PLUGIN_REPOHOST=docker.io \
     PLUGIN_PLATFORMS="linux/amd64,linux/arm64" \
-    PLUGIN_DOCKERFILE="Dockerfile"
+    PLUGIN_DOCKERFILE="Dockerfile" \
+    PLUGIN_QUIET="true" \
+    PLUGIN_PUSH="false"
+    
 CMD ["/docker-entrypoint.sh"]
