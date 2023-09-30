@@ -67,15 +67,15 @@ function verify_minimum_env {
            [ -z "$PLUGIN_REPOHOST" ] ||
            [ -z "$PLUGIN_PLATFORMS" ] ; then
 		woodpecker_error <<-'EOF'
-			You need to specify one/all of the following settings:
-			 - token
-             - project
-             - repo
-			 - tag
-			 - repohost
-			 - platforms
-             - username
-             - password
+                You need to specify one/all of the following settings:
+                - token
+                - project
+                - repo
+                - tag
+                - repohost
+                - platforms
+                - username
+                - password
 		EOF
 	fi
         woodpecker_note "Sufficient configuration"
@@ -152,10 +152,11 @@ function build_on_depot {
                 woodpecker_note "Building image ${PLUGIN_REPO}:${PLUGIN_TAG} for Custom Repo: ${PLUGIN_REPOHOST}"
                 # Login to Container Registry
                 woodpecker_note "Logging in to Container Registry..."
-                LOGON=$(echo "${PLUGIN_PASSWORD}" | docker login \
-                                                   --username "${PLUGIN_USERNAME}" \
-                                                   --password-stdin 2>/dev/null \
-                                                   "${PLUGIN_REPOHOST}")
+                LOGON=$(docker login \
+                               --username "${PLUGIN_USERNAME}" \
+                               --password "${PLUGIN_PASSWORD}" \
+                               "${PLUGIN_REPOHOST}"
+                        )
                  woodpecker_note "${LOGON}"
         fi 
         woodpecker_note "Building and pushing with Depot..."
