@@ -103,7 +103,9 @@ function build_cli {
         options+=( --project "${PLUGIN_PROJECT}" )
         options+=( --platform "${PLUGIN_PLATFORMS}" )
         
-
+        if [ "${PLUGIN_REPOHOST}" != "docker.io" ]; then
+        PLUGIN_REPO="${PLUGIN_REPOHOST}/${PLUGIN_REPO}"
+        fi
         if [[ -n ${PLUGIN_TAG} ]]; then
                 # Singular tag support
                 options+=( -t "${PLUGIN_REPO}:${PLUGIN_TAG}" )
