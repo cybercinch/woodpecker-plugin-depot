@@ -161,9 +161,10 @@ function build_on_depot {
                 woodpecker_note "Building image ${PLUGIN_REPO}:${PLUGIN_TAG} for Custom Repo: ${PLUGIN_REPOHOST}"
                 # Login to Container Registry
                 woodpecker_note "Logging in to Container Registry..."
-                LOGON=$(echo "${PLUGIN_PASSWORD}" | docker login "${PLUGIN_REPOHOST}" \
+                LOGON=$(echo "${PLUGIN_PASSWORD}" | docker login \
                                                    --username "${PLUGIN_USERNAME}" \
-                                                   --password-stdin 2>/dev/null )
+                                                   --password-stdin 2>/dev/null ) \
+                                                   "${PLUGIN_REPOHOST}" 
         fi 
 }
 
