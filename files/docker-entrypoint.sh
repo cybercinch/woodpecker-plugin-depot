@@ -148,15 +148,6 @@ function build_on_depot {
                                                    --password-stdin 2>/dev/null )
                 woodpecker_note "${LOGON}"
 
-                woodpecker_note "Building and pushing with Depot..."
-                # Build and push with depot
-
-                #parse_tags
-                # Build the Commandline parameters
-                build_cli
-
-                DEPOT_TOKEN=${PLUGIN_TOKEN} depot build "${options[@]}"
-                woodpecker_note "Build completed"
         else
                 woodpecker_note "Building image ${PLUGIN_REPO}:${PLUGIN_TAG} for Custom Repo: ${PLUGIN_REPOHOST}"
                 # Login to Container Registry
@@ -166,6 +157,15 @@ function build_on_depot {
                                                    --password-stdin 2>/dev/null ) \
                                                    "${PLUGIN_REPOHOST}" 
         fi 
+        woodpecker_note "Building and pushing with Depot..."
+        # Build and push with depot
+
+        #parse_tags
+        # Build the Commandline parameters
+        build_cli
+
+        DEPOT_TOKEN=${PLUGIN_TOKEN} depot build "${options[@]}"
+        woodpecker_note "Build completed"
 }
 
 _main() {
