@@ -156,6 +156,7 @@ function build_on_depot {
                                                    --username "${PLUGIN_USERNAME}" \
                                                    --password-stdin 2>/dev/null ) \
                                                    "${PLUGIN_REPOHOST}" 
+                 woodpecker_note "${LOGON}"
         fi 
         woodpecker_note "Building and pushing with Depot..."
         # Build and push with depot
